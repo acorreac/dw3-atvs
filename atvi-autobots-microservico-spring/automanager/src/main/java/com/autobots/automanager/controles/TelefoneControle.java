@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +25,10 @@ public class TelefoneControle {
 	private TelefoneRepositorio repositorio;
 	
 	@Autowired
-	private ClienteRepositorio clienteRepositorio;
+	private TelefoneSelecionador selecionarTelefone;
 	
 	@Autowired
-	private TelefoneSelecionador selecionarTelefone;
+	private ClienteRepositorio clienteRepositorio;
 
 	@GetMapping("/telefone/{id}")
 	public Telefone obterTelefone(@PathVariable Long id) {
@@ -43,11 +42,6 @@ public class TelefoneControle {
 		return telefones;
 	}
 
-	@PostMapping("/cadastrar")
-	public void cadastrarTelefone(@RequestBody Telefone telefone) {
-		repositorio.save(telefone);
-	}
-
 	@PutMapping("/atualizar")
 	public void atualizarTelefone(@RequestBody Telefone atualizacao) {
 		Telefone telefone = repositorio.getById(atualizacao.getId());
@@ -55,18 +49,26 @@ public class TelefoneControle {
 		atualizador.atualizar(telefone, atualizacao);
 		repositorio.save(telefone);
 	}
-
-	@DeleteMapping("/excluir")
-	public void excluirTelefone(@RequestBody Telefone exclusao) {
-		List<Telefone> telefones = repositorio.findAll();
-		Long telefoneId = exclusao.getId();
-		Telefone telefone = selecionarTelefone.selecionar(telefones, telefoneId);
+	
+	@DeleteMapping("/deletar-telefone/{numero}")
+	public void excluirTelefone(@PathVariable String numero) {
 		List<Cliente> clientes = clienteRepositorio.findAll();
-
-		for (Cliente cliente : clientes) {
-			cliente.getTelefones().remove(telefone);
-			repositorio.delete(telefone);
+		for(Cliente cliente : clientes) {
+			for(Telefone telefone : cliente.getTelefones()) {
+				if(telefone.getNumero() == numero.intern()) {
+					cliente.getTelefones().remove(telefone);
+					repositorio.deleteById(telefone.getId());
+					break;
+				}
+			}
 		}
+	}
+	
+	@DeleteMapping("/deletar-telefones")
+	public void excluirTelefones(@RequestBody Cliente cliente) {
+		Cliente clienteSelecionado = clienteRepositorio.getById(cliente.getId());
+		clienteSelecionado.getTelefones().clear();
+		clienteRepositorio.save(clienteSelecionado);
 	}
 	
 }

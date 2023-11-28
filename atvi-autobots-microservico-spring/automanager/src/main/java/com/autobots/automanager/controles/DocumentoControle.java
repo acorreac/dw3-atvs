@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +31,7 @@ public class DocumentoControle {
 	@Autowired
 	private ClienteRepositorio clienteRepositorio;
 
+
 	@GetMapping("/documento/{id}")
 	public Documento obterDocumento(@PathVariable Long id) {
 		List<Documento> documentos = repositorio.findAll();
@@ -46,11 +46,6 @@ public class DocumentoControle {
 		return documentos;
 	}
 	
-	@PostMapping("/cadastrar")
-	public void cadastrarDocumento(@RequestBody Documento documento) {
-			repositorio.save(documento);
-	}
-	
 	@PutMapping("/atualizar")
 	public void atualizarDocumento(@RequestBody Documento atualizacao) {
 		Documento documento = repositorio.getById(atualizacao.getId());
@@ -59,16 +54,25 @@ public class DocumentoControle {
 		repositorio.save(documento);
 	}
 	
-	@DeleteMapping("/excluir")
-	public void excluirDocumento(@RequestBody Documento exclusao) {
-		List<Documento> documentos = repositorio.findAll();
-		Long documentoId = exclusao.getId();
-		Documento documento = selecionadorDocumento.selecionar(documentos, documentoId);
+	@DeleteMapping("/deletar-documento/{numero}")
+	public void excluirDocumento(@PathVariable String numero) {
 		List<Cliente> clientes = clienteRepositorio.findAll();
-
-		for (Cliente cliente : clientes) {
-			cliente.getDocumentos().remove(documento);
+		for(Cliente cliente : clientes) {
+			for(Documento documento : cliente.getDocumentos()) {
+				if(documento.getNumero() == numero.intern()) {
+					cliente.getDocumentos().remove(documento);
+					repositorio.deleteById(documento.getId());
+					break;
+				}
+			}
 		}
-		repositorio.delete(documento);
 	}
+	
+	@DeleteMapping("/deletar-documentos")
+	public void excluirDocumentos(@RequestBody Cliente cliente) {
+		Cliente clienteSelecionado = clienteRepositorio.getById(cliente.getId());
+		clienteSelecionado.getDocumentos().clear();
+		clienteRepositorio.save(clienteSelecionado);
+	}
+	
 }

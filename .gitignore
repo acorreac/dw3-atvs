@@ -10,7 +10,7 @@ target/
 .apt_generated
 .classpath
 .factorypath
-.project.
+.project
 /.project
 ../.project
 ../.settings
