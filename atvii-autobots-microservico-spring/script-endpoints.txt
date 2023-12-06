@@ -1,0 +1,75 @@
+Scripts
+
+# atvi
+    -- Endpoints Cliente:
+        Cliente id: http://localhost:8080/cliente/1
+        Clientes: http://localhost:8080/clientes
+
+        Cadastro: http://localhost:8080/cliente/cadastro
+
+        Delete: http://localhost:8080/cliente/excluir
+        Update: http://localhost:8080/cliente/atualizar
+            json: {
+		            "id": 1,
+		            "nome": "Aline Costa",
+		            "nomeSocial": "Aline",
+		            "telefones": [
+			                {
+				                "id": 1,
+				                "ddd": "11",
+				                "numero": "0000000000"
+			                }
+		                ]
+                    }
+
+       -- Endpoints Documento:
+           Documento id: http://localhost:8080/documento/2
+           Documentos: http://localhost:8080/documentos
+
+           Delete-Documento: http://localhost:8080/deletar-documento/1500
+           Delete-Documentos: http://localhost:8080/deletar-documentos
+                json: {
+	                    "id": 1
+                       }
+
+           Update: http://localhost:8080/atualizar
+                json: {
+	                    "id": 2,
+	                    "tipo": "RG",
+	                    "numero": "00.222.222"
+                       }
+
+           Update-Documento: http://localhost:8080/documento/atualizar-documento
+               json:  {
+                        "id": 2,
+                        "ddd": "11",
+                        "numero": "00.222.222"
+                      }
+
+       -- Endpoints Endereço:
+           Endereco id id: http://localhost:8080/endereco/1
+           Enderecos: http://localhost:8080/enderecos
+
+           Delete: http://localhost:8080/deletar/1
+           Update: http://localhost:8080/endereco/atualizar
+                json: {
+	                    "id": 1,
+	                    "cidade": "SJC"
+                      }
+
+       -- Endpoints Telefone:
+           Telefone id: http://localhost:8080/telefone/telefone/1
+           Telefones: http://localhost:8080/telefone/telefones
+
+           Delete: http://localhost:8080/telefone/excluir
+           Update: http://localhost:8080/telefone/atualizar
+                json: {
+                        "id": 1,
+                        "ddd": "11"
+                      }
+
+            delete-Telefone: http://localhost:8080/telefone/deletar-telefone/981234576
+            delete-Telefones: http://localhost:8080/telefone/deletar-telefones
+                json: {
+	                    "id": 1
+                       }
